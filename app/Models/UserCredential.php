@@ -19,7 +19,8 @@ class UserCredential extends UuidKeyModel
 
     protected $hidden = [
         'password_hash',
-        'deleted_at'
+        'deleted_at',
+        'user'
     ];
 
     protected $casts = [

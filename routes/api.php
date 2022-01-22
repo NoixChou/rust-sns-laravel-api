@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserAuthorizationController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::prefix('auth')->middleware('auth.token')->group(function () {
-    Route::post('/login', [UserAuthorizationController::class, 'login']);
-    Route::post('/register', [UserAuthorizationController::class, 'register']);
+Route::prefix('auth')->group(function () {
+    Route::middleware('auth.token')->group(function () {
+        Route::post('/login', [UserAuthorizationController::class, 'login']);
+        Route::post('/register', [UserAuthorizationController::class, 'register']);
+    });
+
+    Route::middleware('auth.token:required')->get('/me', [UserAuthorizationController::class, 'show_me']);
 });

@@ -22,9 +22,9 @@ class UserAuthorizationController extends Controller
         return response(null, HttpResponse::HTTP_CREATED);
     }
 
-    public function login(LoginUserCredentialRequest $request): JsonResponse | ApiErrorResponse
+    public function login(LoginUserCredentialRequest $request): JsonResponse|ApiErrorResponse
     {
-        if($token = UserCredential::verifyCredentialAndIssueToken($request)) {
+        if ($token = UserCredential::verifyCredentialAndIssueToken($request)) {
             return response()->json([
                 'token' => $token->token
             ])->setStatusCode(HttpResponse::HTTP_OK);
@@ -33,23 +33,10 @@ class UserAuthorizationController extends Controller
         return new ApiErrorResponse(ApiErrorCode::AuthFailed, 'Invalid credentials.');
     }
 
-    public function show(UserCredential $userCredential)
+    public function show_me(Request $request): JsonResponse
     {
-        //
-    }
-
-    public function edit(UserCredential $userCredential)
-    {
-        //
-    }
-
-    public function update(Request $request, UserCredential $userCredential)
-    {
-        //
-    }
-
-    public function destroy(UserCredential $userCredential)
-    {
-        //
+        return response()->json([
+            'credential' => $request->attributes->get('auth.credential')
+        ])->setStatusCode(HttpResponse::HTTP_OK);
     }
 }

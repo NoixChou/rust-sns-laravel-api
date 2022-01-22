@@ -30,10 +30,8 @@ class TokenAuthenticateMiddleware
 
         if ($storedToken) {
             $request->attributes->add([
-                'auth' => [
-                    'credential' => $storedToken->userCredential,
-                    'user' => $storedToken->userCredential->user
-                ]
+                'auth.credential' => $storedToken->userCredential,
+                'auth.user' => $storedToken->userCredential->user
             ]);
 
             return $next($request);
