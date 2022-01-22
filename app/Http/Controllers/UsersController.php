@@ -7,12 +7,13 @@ use App\Http\Response\ApiErrorCode;
 use App\Http\Response\ApiErrorResponse;
 use App\Models\User;
 use App\Models\UserCredential;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
 
-    public function create(CreateUserRequest $request)
+    public function create(CreateUserRequest $request): JsonResponse|ApiErrorResponse
     {
         $authorizedUser = $request->attributes->get('auth.credential');
         if (!($authorizedUser instanceof UserCredential)) {
@@ -36,18 +37,25 @@ class UsersController extends Controller
         ]);
     }
 
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
-        //
+        // TODO: Resourceで返す
+        return response()->json([
+            'user' => $user
+        ]);
     }
 
-    public function show_me(User $user)
+    public function show_me(Request $request): JsonResponse
     {
-        //
+        $user = $request->attributes->get('auth.user');
+
+        return response()->json([
+            'user' => $user
+        ]);
     }
 
     public function update_me(Request $request)
     {
-        //
+        // TODO: ユーザープロフィール更新
     }
 }

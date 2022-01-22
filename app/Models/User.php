@@ -20,9 +20,11 @@ class User extends UuidKeyModel
 
     protected $hidden = [
         'deleted_at',
+        'birthday',
     ];
 
     protected $casts = [
         'deleted_at' => 'datetime',
+        'is_private' => 'boolean'
     ];
 }
