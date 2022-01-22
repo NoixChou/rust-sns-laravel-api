@@ -10,7 +10,7 @@ class RegisterUserCredentialRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:user_credentials,email',
-            'password' => 'required|min:8'
+            'password' => 'required|string|min:8'
         ];
     }
 }
