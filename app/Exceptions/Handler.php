@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Http\Response\ApiErrorCode;
+use App\Http\Response\ApiErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,20 +46,21 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof ValidationException) {
-            return response([
-                'error' => [
-                    'message' => $exception->validator->errors()
-                ]
-            ], Response::HTTP_BAD_REQUEST);
+            return new ApiErrorResponse(ApiErrorCode::InvalidRequest, 'Failed to parse request.');
         }
 
         if ($this->isHttpException($exception)) {
-            return response([
-                'error' => [
-                    'code' => $exception->getStatusCode(),
-                    'message' => $exception->getMessage()
-                ]
-            ], $exception->getStatusCode());
+            $statusCode = $exception->getStatusCode();
+
+            if ($statusCode === 404) {
+                return new ApiErrorResponse(ApiErrorCode::NotFound, 'No endpoint found.');
+            }
+
+            if ($statusCode < 500) {
+                return new ApiErrorResponse(ApiErrorCode::InvalidRequest, 'Invalid request.');
+            }
+
+            return new ApiErrorResponse(ApiErrorCode::ServerError, 'Something went wrong.');
         }
 
         if (config('app.debug')) {
