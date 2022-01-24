@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\PostsController;
 use App\Http\Controllers\UserAuthorizationController;
 use App\Http\Controllers\UsersController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,9 +31,17 @@ Route::prefix('users')->group(function () {
         Route::post('', [UsersController::class, 'create']);
         Route::get('/me', [UsersController::class, 'show_me']);
         Route::patch('/me', [UsersController::class, 'update_me']);
+        Route::get('/me/posts', [PostsController::class, 'my_index']);
+        Route::get('/{user}/posts', [PostsController::class, 'users_index']);
     });
 
     Route::middleware('auth.token')->group(function () {
         Route::get('/{user}', [UsersController::class, 'show']);
     });
+});
+
+Route::prefix('posts')->middleware('auth.token:required')->group(function () {
+    Route::post('', [PostsController::class, 'create']);
+    Route::get('/{post}', [PostsController::class, 'show']);
+    Route::delete('/{post}', [PostsController::class, 'delete']);
 });
